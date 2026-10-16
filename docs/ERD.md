@@ -1,0 +1,162 @@
+# Pangisda – Database Design (ERD)
+
+Planned DBMS: **MySQL 8** (relational: the data has clear relationships and needs foreign-key integrity).
+The mock API in `/server/data/db.js` uses the same tables and column names, so the frontend will not change when the real database is connected at the Final.
+
+## Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+    USERS ||--o{ CATCHES : logs
+    USERS ||--o{ FISHING_SPOTS : "creates (admin)"
+    USERS ||--o{ FAVORITES : saves
+    FISHING_SPOTS ||--o{ CATCHES : "is where"
+    FISHING_SPOTS ||--o{ SPOT_SPECIES : has
+    FISHING_SPOTS ||--o{ FAVORITES : "is saved in"
+    SPECIES ||--o{ SPOT_SPECIES : "lives at"
+    SPECIES ||--o{ CATCHES : "is caught as"
+
+    USERS {
+        int id PK
+        varchar full_name
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        enum role "angler | admin"
+        datetime created_at
+    }
+    FISHING_SPOTS {
+        int id PK
+        varchar name
+        varchar municipality
+        varchar province
+        enum water_type "saltwater | freshwater | brackish"
+        decimal latitude
+        decimal longitude
+        varchar best_time
+        enum access_level "easy | moderate | hard"
+        text description
+        int created_by FK
+        datetime created_at
+    }
+    SPECIES {
+        int id PK
+        varchar common_name
+        varchar local_name
+        varchar scientific_name UK
+        enum habitat
+        boolean is_protected
+        varchar conservation_note
+        varchar image_url
+        varchar image_credit
+    }
+    SPOT_SPECIES {
+        int spot_id PK, FK
+        int species_id PK, FK
+    }
+    CATCHES {
+        int id PK
+        int user_id FK
+        int spot_id FK
+        int species_id FK
+        decimal weight_kg
+        decimal length_cm
+        date caught_at
+        enum method
+        varchar bait
+        boolean released
+        text notes
+        datetime created_at
+    }
+    FAVORITES {
+        int user_id PK, FK
+        int spot_id PK, FK
+        datetime created_at
+    }
+```
+
+## Relationships
+
+| Relationship | Type | Foreign key | On delete |
+|---|---|---|---|
+| A user logs many catches | 1 : N | `catches.user_id → users.id` | CASCADE (deleting an account removes its catches) |
+| A spot has many catches | 1 : N | `catches.spot_id → fishing_spots.id` | RESTRICT (a spot with catches cannot be deleted) |
+| A species appears in many catches | 1 : N | `catches.species_id → species.id` | RESTRICT |
+| Spots and species | M : N via `spot_species` | `spot_id`, `species_id` | CASCADE |
+| Users save spots | M : N via `favorites` | `user_id`, `spot_id` | CASCADE |
+| An admin creates spots | 1 : N | `fishing_spots.created_by → users.id` | SET NULL |
+
+## Normalization (3NF)
+
+- **1NF:** every column holds one value. The species found at a spot are stored as rows in `spot_species`, not as a comma-separated list.
+- **2NF:** the junction tables use composite keys, and no column depends on only part of the key.
+- **3NF:** no transitive dependencies. A catch stores only `species_id`; the species name lives once in `species`. Location data lives in `fishing_spots`, not in each catch.
+
+## Data dictionary
+
+### users
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| id | INT UNSIGNED | PK, AUTO_INCREMENT | User ID |
+| full_name | VARCHAR(60) | NOT NULL | Display name |
+| username | VARCHAR(20) | NOT NULL, UNIQUE | 3–20 chars, `a–z 0–9 _` |
+| email | VARCHAR(120) | NOT NULL, UNIQUE | Login email, never shown publicly |
+| password_hash | VARCHAR(255) | NOT NULL | bcrypt hash (never plain text) |
+| role | ENUM('angler','admin') | NOT NULL, DEFAULT 'angler' | Authorization role |
+| created_at | DATETIME | NOT NULL, DEFAULT CURRENT_TIMESTAMP | |
+
+### fishing_spots
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| id | INT UNSIGNED | PK, AUTO_INCREMENT | |
+| name | VARCHAR(80) | NOT NULL | Spot name |
+| municipality | VARCHAR(60) | NOT NULL | Town or city |
+| province | VARCHAR(60) | NOT NULL, INDEX | Used for filtering |
+| water_type | ENUM('saltwater','freshwater','brackish') | NOT NULL, INDEX | |
+| latitude | DECIMAL(9,6) | NOT NULL, CHECK 4–22 | |
+| longitude | DECIMAL(9,6) | NOT NULL, CHECK 116–127 | |
+| best_time | VARCHAR(80) | NULL | e.g. "Early morning, Nov–Mar" |
+| access_level | ENUM('easy','moderate','hard') | NOT NULL, DEFAULT 'moderate' | |
+| description | TEXT | NOT NULL | At least 20 characters |
+| created_by | INT UNSIGNED | FK → users.id, NULL | Admin who added the spot |
+| created_at | DATETIME | NOT NULL | |
+
+### species
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| id | INT UNSIGNED | PK, AUTO_INCREMENT | |
+| common_name | VARCHAR(80) | NOT NULL | English name |
+| local_name | VARCHAR(60) | NOT NULL | Filipino name, e.g. "Lapu-lapu" |
+| scientific_name | VARCHAR(80) | NOT NULL, UNIQUE | |
+| habitat | ENUM('saltwater','freshwater','brackish') | NOT NULL | |
+| is_protected | BOOLEAN | NOT NULL, DEFAULT FALSE | Shows a release reminder in the UI |
+| conservation_note | VARCHAR(255) | NULL | |
+
+### spot_species
+| Column | Type | Constraints |
+|---|---|---|
+| spot_id | INT UNSIGNED | PK (composite), FK → fishing_spots.id |
+| species_id | INT UNSIGNED | PK (composite), FK → species.id |
+
+### catches
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| id | INT UNSIGNED | PK, AUTO_INCREMENT | |
+| user_id | INT UNSIGNED | FK → users.id, NOT NULL, INDEX | Who logged it |
+| spot_id | INT UNSIGNED | FK → fishing_spots.id, NOT NULL, INDEX | Where |
+| species_id | INT UNSIGNED | FK → species.id, NOT NULL | What |
+| weight_kg | DECIMAL(6,2) | NOT NULL, CHECK > 0 AND ≤ 500 | |
+| length_cm | DECIMAL(5,1) | NULL, CHECK 1–400 | |
+| caught_at | DATE | NOT NULL, not in the future | |
+| method | ENUM('rod_and_reel','handline','fly_fishing','spearfishing','cast_net') | NOT NULL | |
+| bait | VARCHAR(60) | NULL | |
+| released | BOOLEAN | NOT NULL, DEFAULT FALSE | Catch-and-release |
+| notes | VARCHAR(500) | NULL | |
+| created_at | DATETIME | NOT NULL | |
+
+### favorites (planned for the Final; saved spots are kept in a browser cookie at midterm)
+| Column | Type | Constraints |
+|---|---|---|
+| user_id | INT UNSIGNED | PK (composite), FK → users.id |
+| spot_id | INT UNSIGNED | PK (composite), FK → fishing_spots.id |
+| created_at | DATETIME | NOT NULL |
