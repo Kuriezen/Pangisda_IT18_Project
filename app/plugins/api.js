@@ -1,6 +1,6 @@
 /**
  * Creates one configured fetch client ($api) for the whole app.
- * - baseURL comes from runtimeConfig.public.apiBase (mock API now, real API at the Final)
+ * - baseURL comes from runtimeConfig.public.apiBase (this project's own /api by default)
  * - the auth token from the Pinia auth store is attached to every request
  */
 export default defineNuxtPlugin((nuxtApp) => {
