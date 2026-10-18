@@ -1,4 +1,5 @@
 /**
+<<<<<<< HEAD
  * Mock database for the midterm.
  *
  * Every array below mirrors one table of the planned relational database
@@ -7,12 +8,23 @@
  *
  * Data is kept in memory: changes made while the dev server is running are
  * lost when it restarts. Spot details are sample data for academic use only.
+=======
+ * Sample data loaded into PostgreSQL by `npm run db:setup` (server/database/setup.js).
+ *
+ * Every array below mirrors one table of the database (see docs/ERD.md and
+ * server/database/schema.sql). The API routes read from PostgreSQL, not from here.
+ * Spot details are sample data for academic use only.
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
  */
 
 export const FISHING_METHODS = ['rod_and_reel', 'handline', 'fly_fishing', 'spearfishing', 'cast_net']
 export const WATER_TYPES = ['saltwater', 'freshwater', 'brackish']
 
+<<<<<<< HEAD
 // users  (passwords are plain text ONLY in this mock; the real backend stores bcrypt hashes)
+=======
+// users  (plain-text sample passwords; setup.js stores only their bcrypt hashes)
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 export const users = [
   { id: 1, full_name: 'Pangisda Admin', username: 'admin', email: 'admin@pangisda.ph', password: 'Admin1234', role: 'admin', created_at: '2026-08-01T08:00:00+08:00' },
   { id: 2, full_name: 'Owen', username: 'owen', email: 'owen@pangisda.ph', password: 'Angler1234', role: 'angler', created_at: '2026-08-03T09:15:00+08:00' },
@@ -77,9 +89,12 @@ export const catches = [
   { id: 14, user_id: 3, spot_id: 8, species_id: 1, weight_kg: 0.8, length_cm: 31, caught_at: '2026-08-30', method: 'rod_and_reel', bait: 'Corn kernel', released: true, notes: null, created_at: '2026-08-30T09:40:00+08:00' },
 ]
 
+<<<<<<< HEAD
 /** Returns the next auto-increment id for a table (array of rows with numeric `id`). */
 export function nextId(table) {
   return table.reduce((max, row) => Math.max(max, row.id), 0) + 1
 }
 
 export const db = { users, species, spots, spotSpecies, catches }
+=======
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888

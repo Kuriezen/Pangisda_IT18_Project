@@ -3,16 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+<<<<<<< HEAD
   "description": "Pangisda – fishing spot finder and catch log (ITE 18 Midterm, Frontend track)",
+=======
+  "description": "Pangisda – fishing spot finder and catch log (ITE 18, Nuxt + PostgreSQL)",
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
     "preview": "nuxt preview",
+<<<<<<< HEAD
+=======
+    "db:setup": "node server/database/setup.js",
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
+<<<<<<< HEAD
     "nuxt": "^4.1.2",
+=======
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "nuxt": "^4.1.2",
+    "pg": "^8.23.1",
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
     "pinia": "^3.0.3",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1"

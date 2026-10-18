@@ -3,6 +3,7 @@
 ITE 18 Midterm Project · **Frontend track** · Soreño & Alvar
 
 Pangisda helps anglers in Butuan and the Agusan area find fishing spots, log their catches, and practice responsible catch-and-release.
+<<<<<<< HEAD
 It is built with **Nuxt 4 (Vue 3)** and **Pinia**, and reads data from a **mock REST API** whose shape matches the planned database (`docs/ERD.md`) and API contract (`docs/API.md`).
 
 ## Run it
@@ -17,13 +18,37 @@ npm run dev
 Open http://localhost:3000. To test on your phone, run `npm run dev -- --host` and open the "Network" address on a phone connected to the same Wi-Fi.
 
 ### Demo accounts (mock API)
+=======
+It is built with **Nuxt 4 (Vue 3)** and **Pinia**, with a REST API (Nuxt server routes) backed by **PostgreSQL**. The database design is in `docs/ERD.md` and the API contract in `docs/API.md`.
+
+## Run it
+
+Requirements: **Node.js 20.12 or newer** (`node -v`) and a **PostgreSQL** database (installed locally, or a free hosted one from Neon, Supabase or Render).
+
+```bash
+npm install
+cp .env.example .env      # then put your DATABASE_URL and JWT_SECRET in .env
+npm run db:setup          # creates the tables and loads the sample data
+npm run dev
+```
+
+`npm run db:setup` drops and recreates every table, so run it again whenever you want to reset to the sample data.
+
+Open http://localhost:3000. To test on your phone, run `npm run dev -- --host` and open the "Network" address on a phone connected to the same Wi-Fi.
+
+### Demo accounts (sample data)
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 
 | Role | Email | Password |
 |---|---|---|
 | Angler | owen@pangisda.ph | Angler1234 |
 | Admin | admin@pangisda.ph | Admin1234 |
 
+<<<<<<< HEAD
 The login page has buttons that fill these in. Data lives in memory, so anything you add resets when the dev server restarts.
+=======
+The login page has buttons that fill these in. Passwords are stored as bcrypt hashes. Anything you add is saved in PostgreSQL.
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 
 ## Screens and routes
 
@@ -46,11 +71,16 @@ The login page has buttons that fill these in. Data lives in memory, so anything
 | Component-based framework, layout, routing | Nuxt file-based routing in `app/pages`, shared layout in `app/layouts/default.vue` |
 | Reusable components | `app/components` (SpotCard, CatchCard, BaseInput, BaseSelect, StatTile, EmptyState, ErrorState, ToastHost, and more) |
 | State management (Pinia) | `app/stores`: `auth` (session and role), `catches` (catch log, filters, stats: the core feature), `spots` (spots, filters, saved spots), `ui` (toasts) |
+<<<<<<< HEAD
 | Mock API integration | `server/api/*` (Nuxt server routes) and `server/data/db.js`. Consumed through `app/plugins/api.js` and `app/composables/useApi.js` |
+=======
+| API integration | `server/api/*` (Nuxt server routes) querying PostgreSQL through `server/utils/db.js`. Consumed through `app/plugins/api.js` and `app/composables/useApi.js` |
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 | Validation and error handling | `app/utils/validators.js` (client) and `server/utils/validation.js` (server). Errors appear per field, in a summary box with links, and through toasts, with loading and retry states |
 | Responsive design | Mobile-first CSS with 640 / 768 / 1024 px breakpoints and a collapsible mobile menu |
 | Accessibility | Skip link, labels on every input, `aria-invalid` and `aria-describedby` on errors, `aria-live` regions, visible focus rings, AA color contrast, keyboard-friendly menu (Esc closes it), reduced-motion support |
 | Role-based UI | Guests see Log in/Sign up. Anglers get "My Catches" and "Log a catch". Admins also get "Manage Spots". Route middleware in `app/middleware` |
+<<<<<<< HEAD
 | Make way for ERD and API | `docs/ERD.md`, `docs/API.md`. Mock tables, columns and the response envelope match the design |
 
 ## Switching to the real backend (Final)
@@ -60,6 +90,17 @@ Set the API base URL and restart. No component code changes are needed:
 ```bash
 NUXT_PUBLIC_API_BASE=https://your-backend.example.com/api npm run dev
 ```
+=======
+| Make way for ERD and API | `docs/ERD.md`, `docs/API.md`. `server/database/schema.sql` implements the ERD; responses follow the envelope in API.md |
+
+## Environment variables
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `DATABASE_URL` | Yes | PostgreSQL connection string. Hosted databases usually need `?sslmode=require` at the end |
+| `JWT_SECRET` | In production | Secret for signing login tokens. A dev-only fallback is used under `npm run dev` |
+| `NUXT_PUBLIC_API_BASE` | No | Point the frontend at a different API server. Defaults to this project's own `/api` |
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 
 ## Project structure
 
@@ -76,8 +117,16 @@ app/
   utils/                 constants, formatters, validators
   error.vue              404 / error page
 server/
+<<<<<<< HEAD
   api/                   mock REST endpoints
   data/db.js             mock tables (users, fishing_spots, species, spot_species, catches)
+=======
+  api/                   REST endpoints (SQL queries against PostgreSQL)
+  data/db.js             sample rows loaded by db:setup (users, fishing_spots, species, spot_species, catches)
+  database/schema.sql    PostgreSQL tables, enum types, keys and constraints
+  database/setup.js      npm run db:setup: creates the schema and loads the sample data
+  utils/db.js            PostgreSQL connection pool (reads DATABASE_URL)
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
   utils/                 response helpers and server-side validation
 docs/
   ERD.md                 database design and data dictionary

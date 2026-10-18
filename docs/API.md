@@ -1,7 +1,11 @@
 # Pangisda – REST API Design (frontend ↔ backend contract)
 
 Base URL: `/api` (configurable with `NUXT_PUBLIC_API_BASE`).
+<<<<<<< HEAD
 **Mocked** = already working in this project through the mock API (`/server/api`). **Planned** = designed now, built for the Final.
+=======
+**Built** = working in this project (`/server/api`, backed by PostgreSQL). **Planned** = designed now, built for the Final.
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 
 ## Response format
 
@@ -17,13 +21,18 @@ Status codes: `200` OK · `201` Created · `401` not logged in · `403` wrong ro
 
 ## Authentication
 
+<<<<<<< HEAD
 - **JWT bearer token.** Sent as `Authorization: Bearer <token>`. The mock issues `mock.<userId>.<stamp>` tokens; the real backend will sign JWTs that expire after 7 days.
+=======
+- **JWT bearer token.** Sent as `Authorization: Bearer <token>`. Tokens are JWTs signed with `JWT_SECRET` that expire after 7 days. Passwords are stored as bcrypt hashes.
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 - **Roles:** `guest` (not logged in), `angler`, `admin`.
 
 ## Endpoints
 
 | Method | Endpoint | Description | Access | Used by screen | Status |
 |---|---|---|---|---|---|
+<<<<<<< HEAD
 | POST | /api/auth/register | Create an angler account, return token + user | Public | Register | Mocked |
 | POST | /api/auth/login | Log in with email + password, return token + user | Public | Login | Mocked |
 | GET | /api/auth/me | Current user's profile | Angler, Admin | Session check on app start (Final) | Mocked |
@@ -46,6 +55,30 @@ Status codes: `200` OK · `201` Created · `401` not logged in · `403` wrong ro
 | POST | /api/users/me/favorites | Save a spot `{ spot_id }` | Angler, Admin | Spot card, Spot Details | Planned |
 | DELETE | /api/users/me/favorites/:spotId | Unsave a spot | Angler, Admin | Spot card, Spot Details | Planned |
 | GET | /api/stats/summary | Totals for the home page | Public | Home | Mocked |
+=======
+| POST | /api/auth/register | Create an angler account, return token + user | Public | Register | Built |
+| POST | /api/auth/login | Log in with email + password, return token + user | Public | Login | Built |
+| GET | /api/auth/me | Current user's profile | Angler, Admin | Session check on app start (Final) | Built |
+| POST | /api/auth/logout | Invalidate the token | Angler, Admin | Header → Log out | Planned |
+| GET | /api/spots?q=&water_type=&province= | List spots with species and catch counts | Public | Home, Fishing Spots, Log a Catch | Built |
+| GET | /api/spots/:id | Spot details, species found there, creator | Public | Spot Details | Built |
+| POST | /api/spots | Add a spot | Admin | Manage Spots | Built |
+| PUT | /api/spots/:id | Update a spot | Admin | Manage Spots | Built |
+| DELETE | /api/spots/:id | Delete a spot (409 if it has catches) | Admin | Manage Spots | Built |
+| GET | /api/species | List all species | Public | Catch Feed, Log a Catch | Built |
+| POST | /api/species | Add a species | Admin | Manage Species (Final) | Planned |
+| PUT | /api/species/:id | Update a species | Admin | Manage Species (Final) | Planned |
+| DELETE | /api/species/:id | Delete a species | Admin | Manage Species (Final) | Planned |
+| GET | /api/catches?spot_id=&user_id=&species_id= | List catches, newest first, with user/spot/species | Public | Home, Catch Feed, Spot Details, My Catches | Built |
+| GET | /api/catches/:id | One catch | Public | Catch detail (Final) | Built |
+| POST | /api/catches | Log a catch | Angler, Admin | Log a Catch | Built |
+| PUT | /api/catches/:id | Edit own catch | Owner, Admin | Edit Catch (Final) | Planned |
+| DELETE | /api/catches/:id | Delete own catch (admin: any) | Owner, Admin | My Catches | Built |
+| GET | /api/users/me/favorites | My saved spots | Angler, Admin | My Catches → Saved spots | Planned |
+| POST | /api/users/me/favorites | Save a spot `{ spot_id }` | Angler, Admin | Spot card, Spot Details | Planned |
+| DELETE | /api/users/me/favorites/:spotId | Unsave a spot | Angler, Admin | Spot card, Spot Details | Planned |
+| GET | /api/stats/summary | Totals for the home page | Public | Home | Built |
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
 
 ## Sample: log a catch
 

@@ -69,7 +69,11 @@ async function submit() {
         <p class="switch small">No account yet? <NuxtLink to="/register">Create one</NuxtLink></p>
 
         <div class="demo">
+<<<<<<< HEAD
           <p class="small"><strong>Demo accounts (mock API)</strong></p>
+=======
+          <p class="small"><strong>Demo accounts</strong></p>
+>>>>>>> 0ab77e949ae6b0e1c42383131831f1137337a888
           <div class="demo-buttons">
             <button v-for="acc in DEMO_ACCOUNTS" :key="acc.email" type="button" class="btn btn-outline btn-sm" @click="fillDemo(acc)">
               Use {{ acc.label }} account
