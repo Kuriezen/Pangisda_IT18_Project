@@ -5,7 +5,11 @@ defineProps({
   label: { type: String, default: 'Loading…' },
 })
 </script>
-
+/**
+ * LoadingCards component displays a grid of skeleton cards to indicate loading state.
+ * The number of cards and their height can be customized via props.
+ * The label prop provides an accessible description for screen readers.
+ */
 <template>
   <div class="grid grid-3" role="status" aria-live="polite">
     <span class="sr-only">{{ label }}</span>

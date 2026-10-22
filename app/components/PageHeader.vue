@@ -5,7 +5,12 @@ defineProps({
   subtitle: { type: String, default: '' },
 })
 </script>
-
+/**
+ * Page header component for consistent page titles and actions.
+ * Eyebrow is a small text above the title, often used for context.
+ * Subtitle is a smaller text below the title, often used for description.
+ * Actions slot is for buttons or links related to the page.
+ */
 <template>
   <div class="page-header">
     <div class="page-header-row">
